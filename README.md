@@ -35,7 +35,3 @@ Este proyecto constituye la **segunda versión (avanzada y recomendada)**. Su en
 
 ---
 
-## 📂 Archivos Adicionales en la Raíz
-*   **[`articulo_completo.docx`](file:///c:/Users/Nat/Downloads/Proyecto_MIE%201/Proyecto_MIE/articulo_completo.docx)**: Documento de Word de tu artículo/tesis científica que documenta y compara ambos enfoques, incluyendo las tablas y gráficos reales.
-*   **[`requirements.txt`](file:///c:/Users/Nat/Downloads/Proyecto_MIE%201/Proyecto_MIE/requirements.txt)**: Dependencias unificadas de Python.
-*   **Scripts de Soporte**: `generate_results_charts.py` (gráficos), `generar_tablas_desde_codigo.py` (tablas de resultados) y `convertir_a_word.py` (compilador de Markdown a Word).
