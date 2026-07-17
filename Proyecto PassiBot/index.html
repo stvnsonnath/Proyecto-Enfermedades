@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassiBot - Asistente Fitopatológico</title>
+    <!-- Google Fonts: Inter para tipografía moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Panel Lateral de Configuración -->
+        <aside id="sidebar" class="sidebar collapsed">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-sliders"></i>
+                <h2>Configuración RAG</h2>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Parámetros Generales -->
+                <div class="settings-group">
+                    <h3>Nivel de Conocimiento</h3>
+                    <div class="select-wrapper">
+                        <select id="knowledge-level">
+                            <option value="Básico / Divulgativo">Básico / Divulgativo</option>
+                            <option value="Técnico / Profesional" selected>Técnico / Profesional</option>
+                            <option value="Científico / Avanzado">Científico / Avanzado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <h3>Fragmentos a Recuperar (Top K)</h3>
+                        <span id="val-top-k" class="badge">4</span>
+                    </div>
+                    <input type="range" id="slider-top-k" min="3" max="10" value="4" step="1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <h3>Umbral de Similitud</h3>
+                        <span id="val-min-score" class="badge">0.70</span>
+                    </div>
+                    <input type="range" id="slider-min-score" min="0.60" max="0.90" value="0.70" step="0.01">
+                </div>
+
+                <hr class="separator">
+
+                <!-- Pesos de Fuentes -->
+                <div class="weights-header">
+                    <i class="fa-solid fa-weight-hanging"></i>
+                    <h3>Ponderación de Fuentes</h3>
+                </div>
+                <p class="settings-help">Ajusta la relevancia de cada grupo de documentos en la búsqueda.</p>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-poscosecha">Cultivo curuba y granadilla</label>
+                        <span id="val-w-poscosecha" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-poscosecha" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-enfermedades">Enfermedades granadilla</label>
+                        <span id="val-w-enfermedades" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-enfermedades" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-ecofisiologa">Artículos de biología</label>
+                        <span id="val-w-ecofisiologa" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-ecofisiologa" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-agrios">Libro de Fitopatología (Agrios)</label>
+                        <span id="val-w-agrios" class="badge">1.2</span>
+                    </div>
+                    <input type="range" id="w-agrios" class="weight-slider" min="0.5" max="2.0" value="1.2" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-frac">Documentos FRAC (Fungicidas)</label>
+                        <span id="val-w-frac" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-frac" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-postharvest">Journal of Fungi</label>
+                        <span id="val-w-postharvest" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-postharvest" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-confirmed-cases">Resistencia de patógenos</label>
+                        <span id="val-w-confirmed-cases" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-confirmed-cases" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+
+                <div class="settings-group">
+                    <div class="slider-header">
+                        <label for="w-others">Otros documentos</label>
+                        <span id="val-w-others" class="badge">1.0</span>
+                    </div>
+                    <input type="range" id="w-others" class="weight-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área Principal de Chat -->
+        <main class="chat-area">
+            <!-- Encabezado del Chat -->
+            <header class="chat-header">
+                <div class="header-left">
+                    <button id="toggle-sidebar-btn" class="toggle-sidebar-btn" title="Mostrar/Ocultar Configuración">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                    <div class="header-info">
+                        <h1>PassiBot</h1>
+                        <p>Asistente Fitopatológico Inteligente</p>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Base de datos: 2350 fragmentos</span>
+                </div>
+            </header>
+
+            <!-- Selector de Nivel de Conocimiento Inicial (Onboarding) -->
+            <div id="onboarding-overlay" class="onboarding-overlay">
+                <div class="onboarding-card">
+                    <div class="onboarding-header">
+                        <h2>Bienvenido a PassiBot</h2>
+                        <p>Selecciona tu nivel de conocimiento inicial para adaptar las respuestas:</p>
+                    </div>
+                    <div class="onboarding-options">
+                        <button class="onboarding-btn" data-level="Básico / Divulgativo">
+                            <div class="btn-text">
+                                <strong>Básico / Divulgación</strong>
+                                <span>Respuestas sencillas, analogías y lenguaje directo.</span>
+                            </div>
+                        </button>
+                        <button class="onboarding-btn" data-level="Técnico / Profesional">
+                            <div class="btn-text">
+                                <strong>Técnico / Profesional</strong>
+                                <span>Enfoque agronómico práctico y manejo de campo.</span>
+                            </div>
+                        </button>
+                        <button class="onboarding-btn" data-level="Científico / Investigador">
+                            <div class="btn-text">
+                                <strong>Científico / Investigador</strong>
+                                <span>Nomenclatura formal, bioquímica e investigación.</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historial de Conversación -->
+            <div id="chat-messages" class="chat-messages">
+                <!-- Mensaje de bienvenida -->
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>¡Hola! Soy PassiBot, tu asistente agrícola basado en recuperación documental. Puedo responder tus preguntas con rigor fitopatológico utilizando los PDFs indexados.</p>
+                        <p>Selecciona una pregunta de ejemplo o escribe tu propia consulta para comenzar:</p>
+                    </div>
+                </div>
+                
+                <!-- Sugerencias de Preguntas Guía -->
+                <div class="suggestions-grid">
+                    <button class="suggestion-btn">¿Qué enfermedades afectan la granadilla?</button>
+                    <button class="suggestion-btn">¿Qué indica el código FRAC sobre resistencia?</button>
+                    <button class="suggestion-btn">¿Cómo se realiza el manejo integrado de plagas en granadilla?</button>
+                    <button class="suggestion-btn">¿Qué síntomas produce el secamiento en el cultivo de granadilla?</button>
+                    <button class="suggestion-btn">¿Cómo se clasifican los fungicidas según su modo de acción?</button>
+                    <button class="suggestion-btn">¿Qué recomendaciones tiene el FRAC Code List para la resistencia a fungicidas?</button>
+                    <button class="suggestion-btn">¿Qué patógenos virales afectan a la Passiflora edulis y qué avances se han logrado?</button>
+                </div>
+            </div>
+
+            <!-- Entrada de Texto -->
+            <footer class="chat-input-container">
+                <form id="chat-form" class="chat-form">
+                    <textarea id="question-input" placeholder="Escribe tu pregunta sobre cultivos, enfermedades, patógenos o fungicidas..." rows="1" required></textarea>
+                    <button type="submit" id="send-btn" class="send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Script de control JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
